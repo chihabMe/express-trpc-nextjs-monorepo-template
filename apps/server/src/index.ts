@@ -11,11 +11,14 @@ const registerMiddleware = (app:Express)=>{
   app.use("/api/trpc",trpcMiddleware)
 
 }
-const regsiterErrorsMiddleware = (app:Express)=>{
+const registerErrorsMiddleware = (app:Express)=>{
 
 }
 const runServer = ()=>{
   const app = express()
+  registerMiddleware(app)
+  registerErrorsMiddleware(app)
+  registerMiddleware
   const port = process.env.PORT??3001
   app.listen(port,()=>console.log(`running on port ${port}`))
 }

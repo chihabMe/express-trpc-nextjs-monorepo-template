@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf ./dist && pnpm tsc"
+    "build": "rm -rf ./dist && pnpm tsc",
+    "dev":"nodemon"
   },
   "keywords": [],
   "author": "",
