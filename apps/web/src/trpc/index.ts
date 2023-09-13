@@ -17,12 +17,13 @@ function getBaseUrl() {
     return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
 
   // assume localhost
-   return `http://localhost:${process.SERVER_PORT??2001}`
+   return `http://localhost:${process.SERVER_PORT??3001}`
 }
 export const trpc = createTRPCNext<AppRouter>({
   config(opts) {
-    // const url = getBaseUrl()+"/api/trpc"
-    const url = "http://localhost:3001/api/trpc"
+    // const url = `${getBaseUrl()}/api/trpc`
+    const url = `http://localhost:3001/api/trpc`
+    console.log(url)
     return {
       links: [
         httpBatchLink({
@@ -31,6 +32,7 @@ export const trpc = createTRPCNext<AppRouter>({
            * If you want to use SSR, you need to use the server's full URL
            * @link https://trpc.io/docs/ssr
            **/
+
           url,
 
           // You can pass any HTTP headers you wish here
