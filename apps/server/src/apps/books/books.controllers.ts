@@ -46,8 +46,9 @@ export const deleteBookController = async (input: DeleteBookInput) => {
 export const getAllBooksController = async (input: GetAllBooksInput) => {
   try {
     const books = await booksServices.getAllBooks(input);
+    const page = input?.params?.page??1
     return {
-      page: input.params.page,
+      page ,
       numberOfResults: books.length,
       results: books,
     };

@@ -13,8 +13,8 @@ export const createBook = async (input:CreateBookInput)=>{
 }
 
 export const getAllBooks = async(input:GetAllBooksInput)=>{
-  const page= input.params.page
-  const skip = page*PAGINATION
+  const page= input?.params?.page??1
+  const skip = (page-1)*PAGINATION
   const take  = PAGINATION
   return db.book.findMany({
     take,

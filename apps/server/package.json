@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf ./dist && pnpm tsc",
-    "dev":"ts-node --project tsconfig.json ./src",
-    "dev:start": "nodemon"
+    "dev": "nodemon"
   },
   "keywords": [],
   "author": "",
