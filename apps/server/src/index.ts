@@ -14,12 +14,9 @@ const registerMiddleware = (app:Express)=>{
 const registerErrorsMiddleware = (app:Express)=>{
 
 }
-const runServer = ()=>{
-  const app = express()
-  registerMiddleware(app)
-  registerErrorsMiddleware(app)
-  registerMiddleware
-  const port = process.env.PORT??3001
-  app.listen(port,()=>console.log(`running on port ${port}`))
-}
-if(require.main==module)runServer()
+const app = express()
+registerMiddleware(app)
+registerErrorsMiddleware(app)
+registerMiddleware
+const port = process.env.PORT??3001
+app.listen(port,()=>console.log(`running on port ${port}`))

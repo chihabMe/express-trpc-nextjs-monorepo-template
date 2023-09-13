@@ -11,6 +11,8 @@ const initialForm  = {
   pages:1,
 }
 const  HomePage = () =>{
+
+  const utils = trpc.useContext()
   const [form,setForm] = useState(initialForm)
   const createBookMutation = trpc.createBook.useMutation()
   const getAllBooksQuery = trpc.getAllBooks.useQuery()
@@ -18,16 +20,17 @@ const  HomePage = () =>{
     setForm(prev=>({...prev,[e.target.name]:e.target.value}))
 
   const handleSubmitForm = (e:FormEvent)=>{
+    const pages = parseInt(form.pages.toString())
     e.preventDefault()
      createBookMutation.mutate({
-      pages:form.pages ,
+      pages:pages ,
       title:form.title,
       author:form.author
 
     },{
         onSuccess:(e)=>{
           setForm(initialForm)
-          console.log(e)
+          utils.getAllBooks.invalidate()
         }
 
     })
