@@ -1,0 +1,21 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types":"./dist/index.d.ts",
+  "scripts": {
+    "migrate": "pnpm prisma migrate dev",
+    "build":"rm -rf ./dist && pnpm tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "^5.2.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.2.0",
+    "typescript": "^5.2.2"
+  }
+}
