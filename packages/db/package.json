@@ -6,7 +6,7 @@
   "types":"./dist/index.d.ts",
   "scripts": {
     "migrate": "pnpm prisma migrate dev",
-    "build":"rm -rf ./dist && pnpm tsc"
+    "build":"rm -rf ./dist && pnpm tsc&&pnpm migrate"
   },
   "keywords": [],
   "author": "",
