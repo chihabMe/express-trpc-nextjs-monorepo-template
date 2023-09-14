@@ -8,13 +8,9 @@ function getBaseUrl() {
     // browser should use relative path
     return '';
 
-  if (process.env.VERCEL_URL)
+  if (process.env.NODE_ENV=="production")
     // reference for vercel.com
-    return `https://${process.env.VERCEL_URL}`;
-
-  if (process.env.RENDER_INTERNAL_HOSTNAM)
-    // reference for render.com
-    return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
+    return `https://${process.env.TRPC_SERVER_URL}`;
 
   // assume localhost
    return `http://localhost:${process.env.SERVER_PORT??3001}`
