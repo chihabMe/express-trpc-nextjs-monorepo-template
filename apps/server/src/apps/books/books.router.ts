@@ -1,10 +1,6 @@
+import "reflect-metadata";
+import { container } from "tsyringe";
 import { publicProcedure, t } from "../../trpc/index";
-import {
-  createBooksController,
-  deleteBookController,
-  getAllBooksController,
-  updateBookController,
-} from "./books.controllers";
 import {
   createBookSchema,
   deleteBookSchema,
@@ -12,17 +8,21 @@ import {
   updateBookSchema,
 } from "./books.schemas";
 
+import BooksController from "./books.controllers";
+
+const booksController = container.resolve(BooksController);
+
 export const booksRouter = t.router({
   getAllBooks: publicProcedure.input(getAllBooksSchema).query(({ input }) =>
-    getAllBooksController(input)
+    booksController.getAllBooksController(input)
   ),
   createBook: publicProcedure.input(createBookSchema).mutation(({ input }) =>
-    createBooksController(input)
+    booksController.createBooksController(input)
   ),
   updateBook: publicProcedure.input(updateBookSchema).mutation(({ input }) =>
-    updateBookController(input)
+    booksController.updateBookController(input)
   ),
   deleteBoook: publicProcedure.input(deleteBookSchema).mutation(({ input }) =>
-    deleteBookController(input)
+    booksController.deleteBookController(input)
   ),
 });
