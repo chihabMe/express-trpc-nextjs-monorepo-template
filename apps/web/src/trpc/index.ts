@@ -8,7 +8,7 @@ function getBaseUrl() {
     // browser should use relative path
     return '';
 
-  if (process.env.NODE_ENV=="production")
+  if (process.env.TRPC_SERVER_URL)
     // reference for vercel.com
     return `https://${process.env.TRPC_SERVER_URL}`;
 
@@ -16,7 +16,10 @@ function getBaseUrl() {
    return `http://localhost:${process.env.SERVER_PORT??3001}`
 }
 let trpcClient;
-if(process.env.NODE_ENV!="production"){
+
+const trpcServerUrl = process.env.NEXT_PUBLIC_TRPC_SERVER_URL
+console.log('server url ',trpcServerUrl)
+if(!trpcServerUrl){
   trpcClient = createTRPCNext<AppRouter>({
   config(opts) {
     // const url = `${getBaseUrl()}/api/trpc`
@@ -53,8 +56,8 @@ if(process.env.NODE_ENV!="production"){
   trpcClient = createTRPCNext<AppRouter>({
   config(opts) {
     // const url = `${getBaseUrl()}/api/trpc`
-    const url = `${getBaseUrl()}/api/trpc`
-    console.log(url)
+    const url = `${trpcServerUrl}/api/trpc`
+    console.log("production",url)
     return {
       links: [
         httpBatchLink({
