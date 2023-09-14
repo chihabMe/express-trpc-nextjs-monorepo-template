@@ -1,5 +1,5 @@
 import { PAGINATION } from "../../utils/config";
-import { db } from "../../utils/db";
+import Db, { db } from "../../utils/db";
 import {
   CreateBookInput,
   DeleteBookInput,
@@ -9,6 +9,7 @@ import {
 
 export default class BooksServices {
   createBook = async (input: CreateBookInput) => {
+
     return db.book.create({
       data: {
         pages: input.pages,
