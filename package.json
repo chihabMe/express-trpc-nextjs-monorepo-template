@@ -14,5 +14,8 @@
   },
   "devDependencies": {
     "nx": "16.8.1"
+  },
+  "engines":{
+    "node":">=18"
   }
 }
