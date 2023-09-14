@@ -19,7 +19,9 @@ function getBaseUrl() {
   // assume localhost
    return `http://localhost:${process.env.SERVER_PORT??3001}`
 }
-export const trpc = createTRPCNext<AppRouter>({
+let trpcClient;
+if(process.env.NODE_ENV!="production"){
+  trpcClient = createTRPCNext<AppRouter>({
   config(opts) {
     // const url = `${getBaseUrl()}/api/trpc`
     const url = `http://localhost:3001/api/trpc`
@@ -50,3 +52,39 @@ export const trpc = createTRPCNext<AppRouter>({
    **/
   ssr: false,
 });
+
+}else{
+  trpcClient = createTRPCNext<AppRouter>({
+  config(opts) {
+    // const url = `${getBaseUrl()}/api/trpc`
+    const url = `${getBaseUrl()}/api/trpc`
+    console.log(url)
+    return {
+      links: [
+        httpBatchLink({
+
+          /**
+           * If you want to use SSR, you need to use the server's full URL
+           * @link https://trpc.io/docs/ssr
+           **/
+
+          url,
+
+          // You can pass any HTTP headers you wish here
+          async headers() {
+            return {
+              // authorization: getAuthCookie(),
+            };
+          },
+        }),
+      ],
+    };
+  },
+  /**
+   * @link https://trpc.io/docs/ssr
+   **/
+  ssr: false,
+});
+
+}
+export const trpc  = trpcClient  ;
