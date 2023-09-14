@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "rm -rf ./dist && pnpm tsc",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "start":"export NODE_ENV=products && node ./dist"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +14,7 @@
   "dependencies": {
     "@trpc/server": "^10.38.2",
     "cors": "^2.8.5",
-    "db": "workspace:^",
+    "db": "workspace:*",
     "express": "^4.18.2",
     "zod": "^3.22.2"
   },
