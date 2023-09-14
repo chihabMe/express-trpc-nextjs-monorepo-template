@@ -1,5 +1,5 @@
 {
-  "name": "db",
+  "name": "@shared/db",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",

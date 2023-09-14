@@ -1,5 +1,5 @@
 import React from "react";
-import { Book } from "db";
+import { Book } from "@shared/db";
 import { trpc } from "@/trpc";
 
 interface Props {

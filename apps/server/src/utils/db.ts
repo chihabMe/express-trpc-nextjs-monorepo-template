@@ -1,5 +1,4 @@
-import {  PrismaClient } from "db";
-
+import {  PrismaClient} from "@shared/db";
 
  export const db = new PrismaClient() // method 1 
 

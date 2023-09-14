@@ -9,7 +9,7 @@ import { autoInjectable } from "tsyringe";
 import BooksServices from "./books.services";
 
 @autoInjectable()
- export default class BooksController {
+class BooksController {
   private services: BooksServices;
   constructor(services: BooksServices) {
     this.services = services;
@@ -68,3 +68,4 @@ import BooksServices from "./books.services";
     }
   };
 }
+export default BooksController;
