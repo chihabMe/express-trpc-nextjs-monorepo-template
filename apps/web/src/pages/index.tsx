@@ -38,7 +38,6 @@ const  HomePage = () =>{
   }
   return (
   <div className="w-full min-h-screen  pt-10   max-w-md mx-auto flex flex-col gap-4">
-      {process.env.NEXT_PUBLIC_TRPC_SERVER_URL}
      <form onSubmit={handleSubmitForm} className='w-full flex flex-col gap-2'>  
         <input placeholder='title' className='w-full outline-blue-300 outline outline-2 px-2 h-10 rounded-md bg-white text-gray-800 ' onChange={handleChange} value={form["title"]}  name="title" />
         <input className='w-full outline-blue-300 outline outline-2 h-10 rounded-md bg-white text-gray-800 '  type='number' onChange={handleChange} value={form["pages"]}  name="pages" />
