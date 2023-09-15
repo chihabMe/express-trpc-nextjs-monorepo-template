@@ -61,6 +61,7 @@ class BooksController {
       };
     } catch (err) {
       console.error(err);
+
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: "server error",

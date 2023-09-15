@@ -1,6 +1,7 @@
 import {  PrismaClient} from "@shared/db";
 
- export const db = new PrismaClient() // method 1 
+export const db = new PrismaClient() // method 1 
+export default db
 
 // export const db = DbSingleton.createDbInstance()//method 2 
 //

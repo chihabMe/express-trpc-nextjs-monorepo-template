@@ -16,7 +16,9 @@ const  HomePage = () =>{
   const utils = trpc.useContext()
   const [form,setForm] = useState(initialForm)
   const createBookMutation = trpc.books.createBook.useMutation()
+
   const getAllBooksQuery = trpc.books.getAllBooks.useQuery()
+
   const handleChange = (e:ChangeEvent<HTMLInputElement>)=>
     setForm(prev=>({...prev,[e.target.name]:e.target.value}))
 

@@ -1,5 +1,5 @@
 import { PAGINATION } from "../../utils/config";
-import { db } from "../../utils/db";
+import  db  from "../../utils/db";
 import {
   CreateBookInput,
   DeleteBookInput,

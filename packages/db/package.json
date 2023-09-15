@@ -6,6 +6,9 @@
   "types":"./dist/index.d.ts",
   "scripts": {
     "migrate": "pnpm prisma migrate dev",
+    "generate": "pnpm prisma  generate",
+    "studio": "pnpm prisma  studio",
+    "push": "pnpm prisma  db push",
     "build":"rm -rf ./dist && pnpm tsc&&pnpm migrate"
   },
   "keywords": [],
