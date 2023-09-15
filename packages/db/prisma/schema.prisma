@@ -16,7 +16,7 @@ model Book{
   author String 
   pages Int
   isPublished Boolean @default(true)
-  isActive Boolean @default(false)
+  isActive Boolean @default(true)
   createdAt DateTime @default(now()) 
 }
 

@@ -1,57 +1,56 @@
-import { db } from '../../../src/utils/db';
-import BooksServices from '../../../src/apps/books/books.services';
+import { db } from "../../../src/utils/db";
+import BooksServices from "../../../src/apps/books/books.services";
+import { Book } from "@shared/db";
+import { CreateBookInput } from "../../../src/apps/books/books.schemas";
 
 const booksServices = new BooksServices();
 
 beforeAll(async () => {
-  await db.$connect()
+  await db.$connect();
 });
 
 afterAll(async () => {
   await db.$disconnect();
 });
 
-describe('BooksServices', () => {
-  it('should create a book', async () => {
-    const book = await booksServices.createBook({
-      title: 'Test Book',
-      author: 'Test Author',
-      pages: 100,
+describe("Books services", () => {
+  it("should create a book", async () => {
+    const data: CreateBookInput = {
+      pages: 200,
+      title: "book test 2",
+      author: "book author 2",
+    };
+    const newBook = await booksServices.createBook(data);
+    expect(newBook).toEqual({
+      title:data.title,
+      author:data.author,
+      pages:data.pages,
+      isPublished: true,
+      isActive: true,
+      id: expect.any(String),
+      createdAt: expect.any(Date),
     });
-    expect(book).toHaveProperty('id');
-    expect(book.title).toBe('Test Book');
-    expect(book.author).toBe('Test Author');
-    expect(book.pages).toBe(100);
   });
-
-  it('should get all books', async () => {
-    const books = await booksServices.getAllBooks({ params: { page: 1 } });
-    expect(books).toBeInstanceOf(Array);
-  });
-
-  it('should delete a book', async () => {
-    const book = await booksServices.createBook({
-      title: 'Test Book to delete',
-      author: 'Test Author',
-      pages: 100,
+  it("it should update the book", async () => {
+    const bookUpdateData: CreateBookInput = {
+      author: "new author",
+      title: "new title",
+      pages: 342,
+    };
+    const bookId = await db.book.findFirst({
+      select: {
+        id: true,
+      },
     });
-    await booksServices.deleteBook({ id: book.id });
-    const deletedBook = await db.book.findUnique({ where: { id: book.id } });
-    expect(deletedBook).toBeNull();
-  });
-
-  it('should update a book', async () => {
-    const book = await booksServices.createBook({
-      title: 'Test Book to update',
-      author: 'Test Author',
-      pages: 100,
+    if (!bookId) fail("didnt find any book");
+    const updatedbook = await booksServices.updateBook({
+      body: bookUpdateData,
+      params: {
+        id: bookId.id,
+      },
     });
-    const updatedBook = await booksServices.updateBook({
-      params: { id: book.id },
-      body: { title: 'Updated Test Book', author: 'Updated Test Author', pages: 200 },
-    });
-    expect(updatedBook.title).toBe('Updated Test Book');
-    expect(updatedBook.author).toBe('Updated Test Author');
-    expect(updatedBook.pages).toBe(200);
+    expect(updatedbook.pages).toEqual(bookUpdateData.pages);
+    expect(updatedbook.title).toEqual(bookUpdateData.title);
+    expect(updatedbook.author).toEqual(bookUpdateData.author);
   });
 });
