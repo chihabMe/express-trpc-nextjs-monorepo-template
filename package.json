@@ -10,7 +10,8 @@
     "db:push:test":"dotenv -e .env.test -- pnpm --filter db push",
     "db:studio":"dotenv -e .env.development -- pnpm --filter db studio",
     "db:studio:test":"dotenv -e .env.test -- pnpm --filter db studio",
-    "test":"dotenv -e .env.test -- pnpm test --filter  "
+    "test":"dotenv -e .env.test -- pnpm test --filter  ",
+    "d:server":"dotenv -e .env.development -- pnpm   --filter server  dev "
   },
   "keywords": [],
   "author": "",
