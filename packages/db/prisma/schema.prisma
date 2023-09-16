@@ -10,6 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Token {
+  id        String      @id @default(uuid())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  token     String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model User{
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  email     String    @unique
+  password  String
+  tokens    Token[]   // Add this field to establish a one-to-many relationship
+  isVerified Boolean @default(false)
+  isActive Boolean @default(true)
+}
 model Book{
   id String @id @default(uuid())
   title String 
