@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "db:migrate":"dotenv -e .env.development -- pnpm --filter db migrate",
-    "db:push":"dotenv -e .env.development -- pnpm --filter db push",
-    "db:migrate:test":"dotenv -e .env.test -- pnpm --filter db migrate",
-    "db:push:test":"dotenv -e .env.test -- pnpm --filter db push",
-    "db:studio":"dotenv -e .env.development -- pnpm --filter db studio",
-    "db:studio:test":"dotenv -e .env.test -- pnpm --filter db studio",
-    "test":"dotenv -e .env.test -- pnpm test --filter  ",
-    "d:server":"dotenv -e .env.development -- pnpm   --filter server  dev "
+    "db:migrate": "dotenv -e .env.development -- pnpm --filter db migrate",
+    "db:push": "dotenv -e .env.development -- pnpm --filter db push",
+    "db:migrate:test": "dotenv -e .env.test -- pnpm --filter db migrate",
+    "db:push:test": "dotenv -e .env.test -- pnpm --filter db push",
+    "db:studio": "dotenv -e .env.development -- pnpm --filter db studio",
+    "db:studio:test": "dotenv -e .env.test -- pnpm --filter db studio",
+    "test": "dotenv -e .env.test -- pnpm test --filter  ",
+    "d:server": "dotenv -e .env.development -- pnpm   --filter server  dev ",
+    "build": "dotenv -e .env.development -- pnpm nx build "
   },
   "keywords": [],
   "author": "",
