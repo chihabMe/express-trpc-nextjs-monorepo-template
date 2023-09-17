@@ -41,4 +41,33 @@ export default class AuthServices {
       refresh,
     };
   };
+  getRefreshTokenFromDb = async (token: string) => {
+    return db.token.findFirst({
+      where: {
+        token,
+      },
+      include: {
+        user: true,
+      },
+    });
+  };
+  verifyToken = async (token: string) => {
+    return jwt.verify(token, config.getSecret());
+  };
+  deleteRefreshTokenFromDb = async (token: string) => {
+    return db.token.delete({
+      where: {
+        token,
+      },
+    });
+  };
+
+  verifyRefreshToken = async (refreshToken: string | undefined) => {
+    if (!refreshToken) return false;
+    const isValid = this.verifyToken(refreshToken);
+    if (!isValid) return false;
+    const storedToken = await this.getRefreshTokenFromDb(refreshToken);
+    if (!storedToken || refreshToken == storedToken.token) return false;
+    return storedToken.user;
+  };
 }

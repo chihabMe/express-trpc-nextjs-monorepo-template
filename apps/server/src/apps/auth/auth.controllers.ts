@@ -39,5 +39,36 @@ class AuthController {
       next(err);
     }
   };
+  refreshAcessToken = async (req: Request, res: Response) => {
+    const refreshToken = req.headers["refresh"]?.slice(" ")[1];
+    const user = await this.services.verifyRefreshToken(refreshToken);
+    if (!user) {
+      return res.json({
+        status: "error",
+        message: "invalid refresh token",
+        errors: {
+          refreshToken: ["Invalid"],
+        },
+      });
+    }
+    const tokens = await this.services.generateTokens(user);
+    res.setHeader("authorization", `Bearer ${tokens.access}`);
+    res.json({
+      status: "sucess",
+      message: "refreshed",
+    });
+  };
+  logout = async (req: Request, res: Response) => {
+    const refreshToken = req.headers["refresh"]?.slice(" ")[1];
+    if (refreshToken) {
+      await this.services.deleteRefreshTokenFromDb(refreshToken);
+    }
+    res.removeHeader("authorization");
+    res.removeHeader("refresh");
+    res.json({
+      status: "sucess",
+      message: "logged out",
+    });
+  };
 }
 export default AuthController;

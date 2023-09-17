@@ -17,6 +17,7 @@ model Token {
   token     String
   createdAt DateTime @default(now())
   expiresAt DateTime
+  @@index(fields:[token])
 }
 
 model User{
