@@ -40,7 +40,7 @@ class AuthController {
     }
   };
   refreshAcessToken = async (req: Request, res: Response) => {
-    const refreshToken = req.headers["refresh"]?.slice(" ")[1];
+    const refreshToken = req.headers.refresh?.split(" ")[1];
     const user = await this.services.verifyRefreshToken(refreshToken);
     if (!user) {
       return res.json({
@@ -59,7 +59,7 @@ class AuthController {
     });
   };
   logout = async (req: Request, res: Response) => {
-    const refreshToken = req.headers["refresh"]?.slice(" ")[1];
+    const refreshToken = req.headers["refresh"]?.split(" ")[1];
     if (refreshToken) {
       await this.services.deleteRefreshTokenFromDb(refreshToken);
     }

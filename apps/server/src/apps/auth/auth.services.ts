@@ -57,7 +57,7 @@ export default class AuthServices {
   deleteRefreshTokenFromDb = async (token: string) => {
     return db.token.delete({
       where: {
-        token,
+        token ,
       },
     });
   };
