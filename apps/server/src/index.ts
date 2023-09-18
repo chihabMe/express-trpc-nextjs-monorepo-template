@@ -5,6 +5,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import { authRouter } from "./apps/auth/auth.router";
 import errorsMiddleware from "./utils/middlewares/errors.middleware";
+import cookieParser from "cookie-parser";
 
 const registerApps = (app: Express) => {
   app.use("/api/trpc", trpcMiddleware);
@@ -14,6 +15,7 @@ const registerMiddleware = (app: Express) => {
   app.use(helmet());
   app.use(cors());
   app.use(morgan("tiny"));
+  app.use(cookieParser())
   app.use(express.json());
 };
 const registerErrorsMiddleware = (app: Express) => {

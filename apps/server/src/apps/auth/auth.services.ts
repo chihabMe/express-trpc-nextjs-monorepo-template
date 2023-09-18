@@ -45,6 +45,19 @@ export default class AuthServices {
       refresh,
     };
   };
+  storeRefreshTokenInDb = async (token: string, userId: string) => {
+    const expiresAt = new Date();
+    expiresAt.setSeconds(
+      expiresAt.getSeconds() + config.REFRESH_TOKEN_LIFE_TIME,
+    );
+    return db.token.create({
+      data: {
+        token,
+        expiresAt,
+        userId: userId,
+      },
+    });
+  };
   getRefreshTokenFromDb = async (token: string) => {
     return db.token.findFirst({
       where: {
@@ -68,10 +81,11 @@ export default class AuthServices {
 
   verifyRefreshToken = async (refreshToken: string | undefined) => {
     if (!refreshToken) return false;
-    const isValid = this.verifyToken(refreshToken);
+    const isValid = await this.verifyToken(refreshToken);
     if (!isValid) return false;
     const storedToken = await this.getRefreshTokenFromDb(refreshToken);
-    if (!storedToken || refreshToken == storedToken.token) return false;
+    console.log("stored:",storedToken)
+    if (!storedToken ) return false;
     return storedToken.user;
   };
 }

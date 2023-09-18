@@ -4,6 +4,7 @@ import { obtainTokenSchema } from "./auth.schemas";
 import { NextFunction, Request, Response } from "express";
 import { zParse } from "../../utils/parsers/zod.parser";
 import httpStatus from "http-status";
+import * as config from "../../utils/config";
 
 @autoInjectable()
 class AuthController {
@@ -27,15 +28,27 @@ class AuthController {
             email: ["Invalid"],
           },
         });
-      } else {
-        const tokens = await this.services.generateTokens(user);
-        res.setHeader("authorization", `Bearer ${tokens.access}`);
-        res.setHeader("refresh", `Bearer ${tokens.refresh}`);
-        res.status(httpStatus.OK).json({
-          status: "sucess",
-          message: "logged in",
-        });
       }
+      const tokens = await this.services.generateTokens(user);
+      await this.services.storeRefreshTokenInDb(tokens.refresh, user.id);
+      const access = `Bearer ${tokens.access}`;
+      const refresh = `Bearer ${tokens.refresh}`;
+      const secure = process.env.NODE_ENV == "production";
+      res.cookie("authorization", access, {
+        httpOnly: true,
+        secure,
+        maxAge: config.ACCESS_TOKEN_LIFE_TIME * 1000,
+      });
+      res.cookie("refresh", refresh, {
+        httpOnly: true,
+        secure,
+        maxAge: config.REFRESH_TOKEN_LIFE_TIME * 1000,
+      });
+
+      res.status(httpStatus.OK).json({
+        status: "sucess",
+        message: "logged in",
+      });
     } catch (err) {
       next(err);
     }
@@ -46,8 +59,11 @@ class AuthController {
     next: NextFunction,
   ) => {
     try {
-      const refreshToken = (req.headers.refresh as string)?.split(" ")[1];
+      const refreshToken = req.cookies.refresh?.split(" ")[1];
       const user = await this.services.verifyRefreshToken(refreshToken);
+
+      console.log(refreshToken);
+      console.log("user", user);
       if (!user) {
         return res.json({
           status: "error",
@@ -58,7 +74,7 @@ class AuthController {
         });
       }
       const tokens = await this.services.generateTokens(user);
-      res.setHeader("authorization", `Bearer ${tokens.access}`);
+      res.cookie("authorization", `Bearer ${tokens.access}`);
       res.json({
         status: "sucess",
         message: "refreshed",
@@ -69,12 +85,12 @@ class AuthController {
   };
   logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const refreshToken = (req.headers["refresh"] as string)?.split(" ")[1];
+      const refreshToken = req.cookies.refresh?.split(" ")[1];
       if (refreshToken) {
         await this.services.deleteRefreshTokenFromDb(refreshToken);
       }
-      res.removeHeader("authorization");
-      res.removeHeader("refresh");
+      res.clearCookie("authorization");
+      res.clearCookie("refresh");
       res.json({
         status: "sucess",
         message: "logged out",
@@ -86,9 +102,12 @@ class AuthController {
 
   verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const accessToken = (req.headers["authorization"] as string)?.split(" ")[1].trim();
-      console.log(accessToken)
-      const isValid = accessToken && await this.services.verifyToken(accessToken);
+      const accessToken = req.cookies.authorization?.split(
+        " ",
+      )[1].trim();
+      console.log(accessToken);
+      const isValid = accessToken &&
+        await this.services.verifyToken(accessToken);
       if (!isValid) {
         return res.status(400).json({
           status: "error",
@@ -98,10 +117,10 @@ class AuthController {
           },
         });
       }
-      return {
+      return res.json({
         status: "sucess",
         message: "valid token",
-      };
+      });
     } catch (err) {
       next(err);
     }

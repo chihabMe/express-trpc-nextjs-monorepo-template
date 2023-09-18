@@ -6,5 +6,5 @@ export const getSecret = ()=>{
   if(!secret)throw new Error("SECRET_KEY is required")
   return secret
 }
-export const ACCESS_TOKEN_LIFE_TIME=60*60*30 // 30min
-export const REFRESH_TOKEN_LIFE_TIME=60*60*25*35//35 days
+export const ACCESS_TOKEN_LIFE_TIME=60*30 // 30min
+export const REFRESH_TOKEN_LIFE_TIME=60*60*24*35//35 days
