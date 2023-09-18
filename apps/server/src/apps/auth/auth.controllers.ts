@@ -83,5 +83,28 @@ class AuthController {
       next(err);
     }
   };
+
+  verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const accessToken = (req.headers["authorization"] as string)?.split(" ")[1].trim();
+      console.log(accessToken)
+      const isValid = accessToken && await this.services.verifyToken(accessToken);
+      if (!isValid) {
+        return res.status(400).json({
+          status: "error",
+          message: "invalid token",
+          errors: {
+            token: ["Invalid"],
+          },
+        });
+      }
+      return {
+        status: "sucess",
+        message: "valid token",
+      };
+    } catch (err) {
+      next(err);
+    }
+  };
 }
 export default AuthController;

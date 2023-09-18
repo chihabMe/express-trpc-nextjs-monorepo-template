@@ -8,4 +8,5 @@ export const authRouter = Router();
 
 authRouter.post("/token/obtain", authController.obtainToken);
 authRouter.post("/token/refresh", authController.refreshAcessToken);
+authRouter.post("/token/verify", authController.verifyToken);
 authRouter.post("/logout", authController.logout);
