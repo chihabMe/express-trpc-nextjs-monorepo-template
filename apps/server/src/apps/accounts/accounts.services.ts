@@ -8,12 +8,21 @@ class AccountsServices {
   constructor(hasher: Hasher) {
     this.hasher = hasher;
   }
+  getAccountById = async (userId: string) => {
+    return db.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+  };
   checkIfEmailExists = async (email: string) => {
     return db.user.findFirst({
       where: {
         email,
       },
     });
+  };
+  getAccount = async () => {
   };
   createAccount = async (input: CreateAccountInput) => {
     const password = await this.hasher.hash(input.password);

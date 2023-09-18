@@ -2,15 +2,17 @@ import Hasher from "../../lib/hasher";
 import db from "../../utils/db";
 import { ObtainTokenInput } from "./auth.schemas";
 import { autoInjectable } from "tsyringe";
-import jwt from "jsonwebtoken";
 import { User } from "@shared/db";
 import * as config from "../../utils/config";
+import Jwt from "../../lib/jwt";
 
 @autoInjectable()
 export default class AuthServices {
   private hasher: Hasher;
-  constructor(hasher: Hasher) {
+  private jwt: Jwt;
+  constructor(hasher: Hasher, jwt: Jwt) {
     this.hasher = hasher;
+    this.jwt = jwt;
   }
 
   verifyCredentials = async (input: ObtainTokenInput) => {
@@ -33,11 +35,10 @@ export default class AuthServices {
       username: user.username,
       email: user.email,
     };
-    const secret = config.getSecret();
-    const access = jwt.sign(data, secret, {
+    const access = await this.jwt.sign(data, {
       expiresIn: config.ACCESS_TOKEN_LIFE_TIME,
     });
-    const refresh = jwt.sign(data, secret, {
+    const refresh = await this.jwt.sign(data, {
       expiresIn: config.REFRESH_TOKEN_LIFE_TIME,
     });
     return {
@@ -69,7 +70,7 @@ export default class AuthServices {
     });
   };
   verifyToken = async (token: string) => {
-    return jwt.verify(token, config.getSecret());
+    return this.jwt.verify(token);
   };
   deleteRefreshTokenFromDb = async (token: string) => {
     return db.token.deleteMany({
@@ -84,8 +85,8 @@ export default class AuthServices {
     const isValid = await this.verifyToken(refreshToken);
     if (!isValid) return false;
     const storedToken = await this.getRefreshTokenFromDb(refreshToken);
-    console.log("stored:",storedToken)
-    if (!storedToken ) return false;
+    console.log("stored:", storedToken);
+    if (!storedToken) return false;
     return storedToken.user;
   };
 }

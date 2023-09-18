@@ -2,6 +2,7 @@ import { autoInjectable } from "tsyringe";
 import AccountsServices from "./accounts.services";
 import { CreateAccountInput } from "./accounts.schemas";
 import { TRPCError } from "@trpc/server";
+import { User } from "@shared/db";
 
 @autoInjectable()
 class AccountsController {
@@ -25,6 +26,13 @@ class AccountsController {
       message: `registred sucessfully `,
       data: user,
     };
+  };
+  getLoggedInUserAccount = async (userId: string) => {
+    //@ts-ignore
+    let { password: _, ...user } = await this.services.getAccountById(
+      userId,
+    ) as User;
+    return user;
   };
 }
 

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { publicProcedure, t } from "../../trpc";
+import { protectedProcedure, publicProcedure, t } from "../../trpc";
 import { createAccountSchema } from "./accounts.schemas";
 import { container } from "tsyringe";
 import AccountsController from "./accounts.controllers";
@@ -10,4 +10,7 @@ export const accountsRouter = t.router({
       return accounstsController.createAccounst(input);
     },
   ),
+  getLoggedUserAccount: protectedProcedure.query(({ ctx }) => {
+    return accounstsController.getLoggedInUserAccount(ctx.user.userId);
+  }),
 });
