@@ -1,9 +1,9 @@
-import {publicProcedure, t} from "./index"
-import { db } from "../utils/db"
-import * as z from "zod"
-import { booksRouter } from "../apps/books/books.router"
+import {  t } from "./index";
+import { booksRouter } from "../apps/books/books.router";
+import { accountsRouter } from "../apps/accounts/accounts.router";
 
 export const appRouter = t.router({
-  books:booksRouter,
-  })
-export type AppRouter = typeof appRouter
+  books: booksRouter,
+  accounts: accountsRouter,
+});
+export type AppRouter = typeof appRouter;

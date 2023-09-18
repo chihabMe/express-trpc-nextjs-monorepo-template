@@ -17,6 +17,7 @@ class AuthController {
     try {
       const { email, password } = await zParse(obtainTokenSchema, req.body);
       const user = await this.services.verifyCredentials({ email, password });
+
       if (!user) {
         return res.status(httpStatus.BAD_REQUEST).json({
           status: "error",

@@ -14,13 +14,17 @@ export default class AuthServices {
   }
 
   verifyCredentials = async (input: ObtainTokenInput) => {
-    const password = await this.hasher.hash(input.password);
-    return db.user.findFirst({
+    const user = await db.user.findFirst({
       where: {
         email: input.email,
-        password,
       },
     });
+    if (!user) return false;
+    const isValid = await this.hasher.comparePassword(
+      input.password,
+      user.password,
+    );
+    return isValid ? user : false;
   };
 
   generateTokens = async (user: User) => {

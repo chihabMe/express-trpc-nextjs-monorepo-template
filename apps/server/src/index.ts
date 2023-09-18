@@ -7,6 +7,7 @@ import { authRouter } from "./apps/auth/auth.router";
 import errorsMiddleware from "./utils/middlewares/errors.middleware";
 
 const registerApps = (app: Express) => {
+  app.use("/api/trpc", trpcMiddleware);
   app.use("/api/auth", authRouter);
 };
 const registerMiddleware = (app: Express) => {
@@ -14,7 +15,6 @@ const registerMiddleware = (app: Express) => {
   app.use(cors());
   app.use(morgan("tiny"));
   app.use(express.json());
-  app.use("/api/trpc", trpcMiddleware);
 };
 const registerErrorsMiddleware = (app: Express) => {
   app.use(errorsMiddleware);
