@@ -55,9 +55,9 @@ export default class AuthServices {
     return jwt.verify(token, config.getSecret());
   };
   deleteRefreshTokenFromDb = async (token: string) => {
-    return db.token.delete({
+    return db.token.deleteMany({
       where: {
-        token ,
+        token,
       },
     });
   };

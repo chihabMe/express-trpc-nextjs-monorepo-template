@@ -39,36 +39,48 @@ class AuthController {
       next(err);
     }
   };
-  refreshAcessToken = async (req: Request, res: Response) => {
-    const refreshToken = req.headers.refresh?.split(" ")[1];
-    const user = await this.services.verifyRefreshToken(refreshToken);
-    if (!user) {
-      return res.json({
-        status: "error",
-        message: "invalid refresh token",
-        errors: {
-          refreshToken: ["Invalid"],
-        },
+  refreshAcessToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const refreshToken = (req.headers.refresh as string)?.split(" ")[1];
+      const user = await this.services.verifyRefreshToken(refreshToken);
+      if (!user) {
+        return res.json({
+          status: "error",
+          message: "invalid refresh token",
+          errors: {
+            refreshToken: ["Invalid"],
+          },
+        });
+      }
+      const tokens = await this.services.generateTokens(user);
+      res.setHeader("authorization", `Bearer ${tokens.access}`);
+      res.json({
+        status: "sucess",
+        message: "refreshed",
       });
+    } catch (err) {
+      next(err);
     }
-    const tokens = await this.services.generateTokens(user);
-    res.setHeader("authorization", `Bearer ${tokens.access}`);
-    res.json({
-      status: "sucess",
-      message: "refreshed",
-    });
   };
-  logout = async (req: Request, res: Response) => {
-    const refreshToken = req.headers["refresh"]?.split(" ")[1];
-    if (refreshToken) {
-      await this.services.deleteRefreshTokenFromDb(refreshToken);
+  logout = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const refreshToken = (req.headers["refresh"] as string)?.split(" ")[1];
+      if (refreshToken) {
+        await this.services.deleteRefreshTokenFromDb(refreshToken);
+      }
+      res.removeHeader("authorization");
+      res.removeHeader("refresh");
+      res.json({
+        status: "sucess",
+        message: "logged out",
+      });
+    } catch (err) {
+      next(err);
     }
-    res.removeHeader("authorization");
-    res.removeHeader("refresh");
-    res.json({
-      status: "sucess",
-      message: "logged out",
-    });
   };
 }
 export default AuthController;

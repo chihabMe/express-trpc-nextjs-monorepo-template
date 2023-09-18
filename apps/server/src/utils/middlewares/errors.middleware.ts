@@ -1,13 +1,13 @@
+import { defaultMaxListeners } from "events";
 import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 
-
-export default function errorsMiddleware(
+const errorsMiddleware = (
   err: Error,
   req: Request,
   res: Response,
   next: NextFunction,
-) {
+) => {
   if (err instanceof ZodError) {
     return res.json({
       status: "error",
@@ -15,9 +15,10 @@ export default function errorsMiddleware(
       errors: err.formErrors.fieldErrors,
     });
   }
-  console.error(err)
+  console.error(err);
   res.json({
     staus: "error",
     message: "server error",
   });
-}
+};
+export default errorsMiddleware;

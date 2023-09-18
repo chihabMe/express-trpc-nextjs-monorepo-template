@@ -17,7 +17,7 @@ const registerMiddleware = (app: Express) => {
   app.use("/api/trpc", trpcMiddleware);
 };
 const registerErrorsMiddleware = (app: Express) => {
-  app.use(errorsMiddleware)
+  app.use(errorsMiddleware);
 };
 const app = express();
 registerMiddleware(app);
