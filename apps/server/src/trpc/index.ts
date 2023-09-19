@@ -1,6 +1,7 @@
 import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import Jwt from "../lib/jwt";
+export {inferRouterOutputs,inferRouterInputs} from "@trpc/server"
 
 const jwt = new Jwt();
 
