@@ -1,7 +1,7 @@
 import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import Jwt from "../lib/jwt";
-export {inferRouterOutputs,inferRouterInputs} from "@trpc/server"
+export { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 const jwt = new Jwt();
 
@@ -10,9 +10,9 @@ export async function createContext({
   res,
 }: trpcExpress.CreateExpressContextOptions) {
   async function getUserFromCookie() {
-    const token = req.cookies.authorization;
+    const token = req.headers["authorization"];
     if (token) {
-      const user = await jwt.verify(token.split(" ")[1]) ;
+      const user = await jwt.verify(token.split(" ")[1]);
       return user;
     }
     return null;
@@ -20,6 +20,7 @@ export async function createContext({
   const user = await getUserFromCookie();
   return {
     user,
+    headers: req.headers,
   };
 }
 

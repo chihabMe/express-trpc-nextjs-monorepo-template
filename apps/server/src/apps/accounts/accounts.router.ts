@@ -6,7 +6,7 @@ import AccountsController from "./accounts.controllers";
 const accounstsController = container.resolve(AccountsController);
 export const accountsRouter = t.router({
   createAccount: publicProcedure.input(createAccountSchema).mutation(
-    ({ input }) => {
+    ({input,ctx}) => {
       return accounstsController.createAccounst(input);
     },
   ),

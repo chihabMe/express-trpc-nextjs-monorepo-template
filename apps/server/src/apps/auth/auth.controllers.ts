@@ -1,11 +1,18 @@
 import { autoInjectable } from "tsyringe";
 import AuthServices from "./auth.services";
-import { obtainTokenSchema } from "./auth.schemas";
+import {
+  LogoutTokenInput,
+  ObtainTokenInput,
+  obtainTokenSchema,
+  RefreshTokenInput,
+  VerifyTokenInput,
+} from "./auth.schemas";
 import { NextFunction, Request, Response } from "express";
 import { zParse } from "../../utils/parsers/zod.parser";
 import httpStatus from "http-status";
 import * as config from "../../utils/config";
 import IJwtUser from "../interfaces/IJwtUser";
+import { TRPCError } from "@trpc/server";
 
 @autoInjectable()
 class AuthController {
@@ -15,26 +22,29 @@ class AuthController {
     this.services = services;
   }
 
-  obtainToken = async (req: Request, res: Response, next: NextFunction) => {
+  obtainToken = async (input: ObtainTokenInput) => {
     try {
-      const { email, password } = await zParse(obtainTokenSchema, req.body);
+      const { email, password } = input;
       const user = await this.services.verifyCredentials({ email, password });
 
       if (!user) {
-        return res.status(httpStatus.BAD_REQUEST).json({
-          status: "error",
-          message: "invalid password or email",
-          errors: {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          cause: {
             password: ["Invalid"],
             email: ["Invalid"],
           },
         });
       }
-      const userData:IJwtUser =  {username:user.username,userId:user.id,email:user.email}
+      const userData: IJwtUser = {
+        username: user.username,
+        userId: user.id,
+        email: user.email,
+      };
       const tokens = await this.services.generateTokens(userData);
       await this.services.storeRefreshTokenInDb(tokens.refresh, user.id);
-      res.status(httpStatus.OK).json({
-        user: null,
+      return {
+        user: userData,
         tokens: {
           authorization: {
             expiresIn: config.ACCESS_TOKEN_LIFE_TIME,
@@ -45,31 +55,28 @@ class AuthController {
             token: tokens.refresh,
           },
         },
-      });
+      };
     } catch (err) {
-      next(err);
+      console.error(err);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+      });
     }
   };
-  refreshAcessToken = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  refreshAccessToken = async (input: RefreshTokenInput) => {
     try {
-      const refreshToken = (req.headers.refresh as string)?.split(" ")[1];
-      console.log("refreshToken", refreshToken);
+      const refreshToken = input.refresh?.split(" ")[1];
       const user = await this.services.verifyRefreshToken(refreshToken);
       if (!user) {
-        return res.json({
-          status: "error",
-          message: "invalid refresh token",
-          errors: {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          cause: {
             refreshToken: ["Invalid"],
           },
         });
       }
       const tokens = await this.services.generateTokens(user);
-      res.status(httpStatus.OK).json({
+      return {
         user,
         tokens: {
           authorization: {
@@ -77,48 +84,56 @@ class AuthController {
             token: tokens.access,
           },
         },
-      });
+      };
     } catch (err) {
-      next(err);
+      console.error(err);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+      });
     }
   };
-  logout = async (req: Request, res: Response, next: NextFunction) => {
+  logoutToken = async (input: LogoutTokenInput) => {
     try {
-      const refreshToken = (req.headers.refresh as string)?.split(" ")[1];
+      const refreshToken = input.refresh?.split(" ")[1];
       if (refreshToken) {
         await this.services.deleteRefreshTokenFromDb(refreshToken);
       }
-      res.json({
+      return {
         status: "sucess",
         message: "logged out",
-      });
+      };
     } catch (err) {
-      next(err);
+      console.error(err);
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+      });
     }
   };
 
-  verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+  verifyToken = async (input: VerifyTokenInput) => {
     try {
-      const accessToken = req.headers.authorization?.split(
+      const accessToken = input.token?.split(
         " ",
       )[1].trim();
       const isValid = accessToken &&
         await this.services.verifyToken(accessToken);
       if (!isValid) {
-        return res.status(400).json({
-          status: "error",
-          message: "invalid token",
-          errors: {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          cause: {
             token: ["Invalid"],
           },
         });
       }
-      return res.json({
+      return {
         status: "sucess",
         message: "valid token",
-      });
+      };
     } catch (err) {
-      next(err);
+      console.error(err);
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+      });
     }
   };
 }
