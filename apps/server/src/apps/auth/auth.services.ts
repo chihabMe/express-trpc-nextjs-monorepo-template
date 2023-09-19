@@ -5,6 +5,7 @@ import { autoInjectable } from "tsyringe";
 import { User } from "@shared/db";
 import * as config from "../../utils/config";
 import Jwt from "../../lib/jwt";
+import IJwtUser from "../interfaces/IJwtUser";
 
 @autoInjectable()
 export default class AuthServices {
@@ -29,9 +30,9 @@ export default class AuthServices {
     return isValid ? user : false;
   };
 
-  generateTokens = async (user: User) => {
+  generateTokens = async (user: IJwtUser) => {
     const data = {
-      userId: user.id,
+      userId: user.userId,
       username: user.username,
       email: user.email,
     };
@@ -87,6 +88,6 @@ export default class AuthServices {
     const storedToken = await this.getRefreshTokenFromDb(refreshToken);
     console.log("stored:", storedToken);
     if (!storedToken) return false;
-    return storedToken.user;
+    return isValid;
   };
 }

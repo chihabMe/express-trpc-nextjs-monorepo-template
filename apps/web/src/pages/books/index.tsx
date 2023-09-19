@@ -23,6 +23,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       data,
+      trpcState: trpcServerClient.dehydrate(),
     },
   };
 };
