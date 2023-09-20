@@ -30,6 +30,7 @@ export default class AuthServices {
     return isValid ? user : false;
   };
 
+
   generateTokens = async (user: IJwtUser) => {
     const data = {
       userId: user.userId,

@@ -1,24 +1,39 @@
-
-import Input from '@/ui/Input'
-import React,{FormEvent} from 'react'
-
+import { trpc } from "@/trpc";
+import Button from "@/ui/Button";
+import Input from "@/ui/Input";
+import { Form, Formik } from "formik";
+import React, { FormEvent, useState } from "react";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+const initialForm = {
+  email: "",
+  password: "",
+};
 const Login = () => {
-  const handleForm = (e:FormEvent)=>{
-    e.preventDefualt()
-  }
+  const loginMutation = trpc.auth.obtainToken.useMutation();
   return (
     <main>
-      <div> 
-        <form onClick={handleForm} className="flex flex-col gap-2 ">
-          <Input/>
-          <Input/>
-          <Input/>
-          <div className="py-2"/>
-          <Button/>
-        </form>
-      </div> 
+      <div>
+        <Formik
+          initialValues={initialForm}
+          validateOnBlur={true}
+          onSubmit={(values, helpers) => {
+            console.log(values);
+          }}
+        >
+          {(props) => (
+            <Form className="flex flex-col w-full max-w-md mx-auto gap-2 ">
+              <Input name="email" type="email" />
+              <Input name="password" type="password" />
+              <div className="py-2" />
+              <Button>
+                login
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </main>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

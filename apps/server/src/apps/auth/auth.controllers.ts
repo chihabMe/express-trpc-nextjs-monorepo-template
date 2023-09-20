@@ -15,6 +15,7 @@ import IJwtUser from "../interfaces/IJwtUser";
 import { TRPCError } from "@trpc/server";
 
 @autoInjectable()
+
 class AuthController {
   private services: AuthServices;
 
