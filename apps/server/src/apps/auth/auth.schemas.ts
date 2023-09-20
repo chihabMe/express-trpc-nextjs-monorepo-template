@@ -2,7 +2,8 @@ import * as z from "zod";
 
 export const obtainTokenSchema = z.object({
   email: z.string(),
-  password: z.string(),
+  password: z.string().min(6, "a password can't be shorter then 6 characters")
+    .max(30, "a password can't be longer then 30 characters"),
 });
 
 export const refreshTokenSchema = z.object({

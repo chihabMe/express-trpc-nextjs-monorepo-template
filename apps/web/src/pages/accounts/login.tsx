@@ -4,6 +4,7 @@ import Input from "@/ui/Input";
 import { Form, Formik } from "formik";
 import React, { FormEvent, useState } from "react";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { loginSchema } from "server/src/trpc";
 const initialForm = {
   email: "",
   password: "",
@@ -21,7 +22,7 @@ const Login = () => {
           }}
         >
           {(props) => (
-            <Form className="flex flex-col w-full max-w-md mx-auto gap-2 ">
+            <Form className="flex flex-col w-full max-w-md gap-2 ">
               <Input name="email" type="email" />
               <Input name="password" type="password" />
               <div className="py-2" />

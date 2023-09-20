@@ -24,7 +24,7 @@ const Input = ({ name, type, ...props }: InputProps) => {
         {...props}
         id={name}
         type={type}
-        className=" rounded-md w-full bg-gray-200 outline-gray-50 active:outline-blue-500 outline-2 outline  px-2 h-10 text-title font-medium"
+        className=" rounded-md w-full bg-gray-200 outline-gray-50 active:outline-blue-300 outline-2 outline  px-2 h-10 text-title font-medium"
       />
       {meta.touched && errors && <ValidationError errors={errors} />}
     </div>
