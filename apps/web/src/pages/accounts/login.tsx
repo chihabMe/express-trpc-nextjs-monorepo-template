@@ -3,8 +3,7 @@ import Button from "@/ui/Button";
 import Input from "@/ui/Input";
 import { Form, Formik } from "formik";
 import React, { FormEvent, useState } from "react";
-import { toFormikValidationSchema } from "zod-formik-adapter";
-import { loginSchema } from "server/src/trpc";
+import { loginSchema } from "@/schemas/login.schema";
 const initialForm = {
   email: "",
   password: "",
@@ -12,21 +11,27 @@ const initialForm = {
 const Login = () => {
   const loginMutation = trpc.auth.obtainToken.useMutation();
   return (
-    <main>
-      <div>
+    <main className="min-h-screen flex flex-col justify-center items-center ">
+      <div className="w-full max-w-sm flex flex-col gap-4  pt-10">
         <Formik
           initialValues={initialForm}
-          validateOnBlur={true}
+          validateOnMount={true}
+          validationSchema={loginSchema}
           onSubmit={(values, helpers) => {
             console.log(values);
+            helpers.setSubmitting(false)
           }}
         >
           {(props) => (
-            <Form className="flex flex-col w-full max-w-md gap-2 ">
+            <Form className="flex flex-col w-full max-w-md gap-4 ">
               <Input name="email" type="email" />
               <Input name="password" type="password" />
               <div className="py-2" />
-              <Button>
+              <Button
+                type="submit"
+                disabled={props.isSubmitting || !props.isValid}
+                className=""
+              >
                 login
               </Button>
             </Form>

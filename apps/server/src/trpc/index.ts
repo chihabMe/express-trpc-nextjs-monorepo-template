@@ -1,12 +1,11 @@
 import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import Jwt from "../lib/jwt";
-import { obtainTokenSchema } from "../apps/auth/auth.schemas";
+export {obtainTokenSchema} from "../apps/auth/auth.schemas"
 export { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 const jwt = new Jwt();
 
-export const loginSchema = obtainTokenSchema
 export async function createContext({
   req,
   res,
