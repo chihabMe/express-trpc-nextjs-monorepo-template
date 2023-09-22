@@ -15,6 +15,7 @@ const errorsMiddleware = (
       errors: err.formErrors.fieldErrors,
     });
   }
+  console.log("-------unhandled error please reporte it ---------");
   console.error(err);
   res.json({
     staus: "error",

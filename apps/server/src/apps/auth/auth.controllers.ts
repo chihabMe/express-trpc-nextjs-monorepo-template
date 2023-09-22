@@ -13,9 +13,10 @@ import httpStatus from "http-status";
 import * as config from "../../utils/config";
 import IJwtUser from "../interfaces/IJwtUser";
 import { TRPCError } from "@trpc/server";
+import { ZodError } from "zod";
+import { ValidationError } from "../../utils/errors/validationError";
 
 @autoInjectable()
-
 class AuthController {
   private services: AuthServices;
 
@@ -24,56 +25,52 @@ class AuthController {
   }
 
   obtainToken = async (input: ObtainTokenInput) => {
-    try {
-      const { email, password } = input;
-      const user = await this.services.verifyCredentials({ email, password });
+    const { email, password } = input;
+    const user = await this.services.verifyCredentials({ email, password });
 
-      if (!user) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          cause: {
-            password: ["Invalid"],
-            email: ["Invalid"],
-          },
-        });
-      }
-      const userData: IJwtUser = {
-        username: user.username,
-        userId: user.id,
-        email: user.email,
-      };
-      const tokens = await this.services.generateTokens(userData);
-      await this.services.storeRefreshTokenInDb(tokens.refresh, user.id);
-      return {
-        user: userData,
-        tokens: {
-          authorization: {
-            expiresIn: config.ACCESS_TOKEN_LIFE_TIME,
-            token: tokens.access,
-          },
-          refresh: {
-            expiresIn: config.REFRESH_TOKEN_LIFE_TIME,
-            token: tokens.refresh,
-          },
-        },
-      };
-    } catch (err) {
-      console.error(err);
+    if (!user) {
       throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
+        message: "Invalid fields",
+        code: "BAD_REQUEST",
+        cause: {
+          email: ["Invalid email"],
+          password: ["Invalid password"],
+        },
       });
     }
+    const userData: IJwtUser = {
+      username: user.username,
+      userId: user.id,
+      email: user.email,
+    };
+    const tokens = await this.services.generateTokens(userData);
+    await this.services.storeRefreshTokenInDb(tokens.refresh, user.id);
+    return {
+      user: userData,
+      tokens: {
+        authorization: {
+          expiresIn: config.ACCESS_TOKEN_LIFE_TIME,
+          token: tokens.access,
+        },
+        refresh: {
+          expiresIn: config.REFRESH_TOKEN_LIFE_TIME,
+          token: tokens.refresh,
+        },
+      },
+    };
   };
   refreshAccessToken = async (input: RefreshTokenInput) => {
     try {
       const refreshToken = input.refresh?.split(" ")[1];
       const user = await this.services.verifyRefreshToken(refreshToken);
+      const cause = new ZodError([]);
+      cause.formErrors.fieldErrors = {
+        refreshToken: ["Invalid"],
+      };
       if (!user) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          cause: {
-            refreshToken: ["Invalid"],
-          },
+          cause,
         });
       }
       const tokens = await this.services.generateTokens(user);

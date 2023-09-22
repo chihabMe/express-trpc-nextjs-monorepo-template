@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const obtainTokenSchema = z.object({
-  email: z.string(),
+  email: z.string().email().min(5,"more then 5 cahracters"),
   password: z.string().min(6, "a password can't be shorter then 6 characters")
     .max(30, "a password can't be longer then 30 characters"),
 });

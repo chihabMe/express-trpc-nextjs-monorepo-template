@@ -1,7 +1,9 @@
 import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import Jwt from "../lib/jwt";
-export {obtainTokenSchema} from "../apps/auth/auth.schemas"
+import { ZodError } from "zod";
+import { ValidationError } from "../utils/errors/validationError";
+export { obtainTokenSchema } from "../apps/auth/auth.schemas";
 export { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 const jwt = new Jwt();
@@ -28,7 +30,28 @@ export async function createContext({
 type Context = inferAsyncReturnType<typeof createContext>;
 
 // export const t = initTRPC.<Context>();
-export const t = initTRPC.context<Context>().create();
+export const t = initTRPC.context<Context>().create({
+  errorFormatter(opts) {
+    const { shape, error } = opts;
+    let zodError;
+    if (error.code == "BAD_REQUEST") {
+      if (error.cause instanceof ZodError) {
+        zodError = error.cause.flatten().fieldErrors;
+      } else if (error.cause != null) {
+        zodError = error.cause;
+      } else {
+        zodError = null;
+      }
+    }
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError,
+      },
+    };
+  },
+});
 export const publicProcedure = t.procedure;
 
 const isAuthed = t.middleware((opts) => {
@@ -46,4 +69,3 @@ const isAuthed = t.middleware((opts) => {
   });
 });
 export const protectedProcedure = t.procedure.use(isAuthed);
-

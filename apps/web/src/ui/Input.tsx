@@ -12,8 +12,9 @@ const ValidationError = ({ errors }: { errors: string[] }) => (
 interface InputProps {
   name: string;
   type: string;
+  label?: string;
 }
-const Input = ({ name, type, ...props }: InputProps) => {
+const Input = ({ name, type, label }: InputProps) => {
   const [field, meta, helpers] = useField({ name });
   const errors = meta.touched ? meta.error as string[] | undefined : undefined;
   const valid = meta.touched && !meta.error;
@@ -21,13 +22,13 @@ const Input = ({ name, type, ...props }: InputProps) => {
   return (
     <div className="flex flex-col gap-2">
       <input
+        placeholder={label}
         {...field}
-        {...props}
         id={name}
         type={type}
         className={` ${errors && "outline-red-400 text-red-400"} ${
           valid && "!outline-green-400 text-green-400"
-        } rounded-md w-full  outline-gray-200 transform duration-200 focus:outline-blue-400 outline-2 outline  px-2 h-10 text-title font-medium`}
+        } rounded-md w-full  outline-gray-200 transform  duration-200 focus:outline-blue-400 outline-2 outline  px-2 h-10 text-title font-medium`}
       />
       {meta.touched && errors && <ValidationError errors={errors} />}
     </div>
