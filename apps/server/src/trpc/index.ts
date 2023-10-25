@@ -33,21 +33,21 @@ type Context = inferAsyncReturnType<typeof createContext>;
 export const t = initTRPC.context<Context>().create({
   errorFormatter(opts) {
     const { shape, error } = opts;
-    let zodError;
+    let errors;
     if (error.code == "BAD_REQUEST") {
       if (error.cause instanceof ZodError) {
-        zodError = error.cause.flatten().fieldErrors;
+        errors = error.cause.flatten().fieldErrors;
       } else if (error.cause != null) {
-        zodError = error.cause;
+        errors = error.cause;
       } else {
-        zodError = null;
+        errors = null;
       }
     }
     return {
       ...shape,
       data: {
         ...shape.data,
-        zodError,
+        errors
       },
     };
   },

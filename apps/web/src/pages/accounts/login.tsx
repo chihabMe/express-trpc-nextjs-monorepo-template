@@ -30,9 +30,10 @@ const Login = () => {
                 router.push("/");
               },
               onError: (error) => {
-                const errors = error.data?.zodError;
+                const errors = error.data?.errors;
                 //@ts-ignore
                 const fieldErros = parseZodErros(errors);
+                console.log(fieldErros)
                 helpers.setErrors(fieldErros);
               },
             });

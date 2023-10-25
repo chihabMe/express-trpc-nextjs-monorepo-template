@@ -12,16 +12,19 @@
     "db:studio:test": "dotenv -e .env.test -- pnpm --filter db studio",
     "test": "dotenv -e .env.test -- pnpm test --filter  ",
     "d:server": "dotenv -e .env.development -- pnpm   --filter server  dev ",
+    "d:web": "dotenv -e .env.development -- pnpm --filter web dev",
     "build": "dotenv -e .env.development -- pnpm nx build "
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "nx": "^16.8.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.4",
+    "dotenv-cli": "^7.3.0",
     "jest": "^29.7.0",
     "nx": "16.8.1",
     "ts-jest": "^29.1.1"

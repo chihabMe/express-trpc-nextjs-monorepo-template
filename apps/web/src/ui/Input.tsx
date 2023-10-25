@@ -18,7 +18,6 @@ const Input = ({ name, type, label }: InputProps) => {
   const [field, meta, helpers] = useField({ name });
   const errors = meta.touched ? meta.error as string[] | undefined : undefined;
   const valid = meta.touched && !meta.error;
-  console.log("errors", errors);
   return (
     <div className="flex flex-col gap-2">
       <input

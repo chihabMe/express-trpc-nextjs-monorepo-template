@@ -59,7 +59,7 @@ describe("BooksController", () => {
     const input: GetAllBooksInput = { params: { page: 1 } };
     mockServices.getAllBooks.mockResolvedValue([]);
     const books = await booksController.getAllBooksController(input);
-    expect(books.results.length).toEqual(0)
+    expect(books.results.length).toEqual(0);
     expect(mockServices.getAllBooks).toHaveBeenCalledWith(input);
   });
 
@@ -73,7 +73,7 @@ describe("BooksController", () => {
       throw new Error("Test Error");
     });
     await expect(booksController.createBooksController(input)).rejects.toThrow(
-      TRPCError,
+      TRPCError
     );
   });
 });

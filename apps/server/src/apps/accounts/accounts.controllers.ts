@@ -14,7 +14,7 @@ class AccountsController {
     const exists = await this.services.checkIfEmailExists(input.email);
     if (exists) {
       throw new TRPCError({
-        message: "invalid fields",
+        message: "Invalid fields",
         code: "BAD_REQUEST",
         cause: {
           email: "Email is already in use",
@@ -29,9 +29,9 @@ class AccountsController {
   };
   getLoggedInUserAccount = async (userId: string) => {
     //@ts-ignore
-    let { password: _, ...user } = await this.services.getAccountById(
+    let { password: _, ...user } = (await this.services.getAccountById(
       userId,
-    ) as User;
+    )) as User;
     return user;
   };
 }
