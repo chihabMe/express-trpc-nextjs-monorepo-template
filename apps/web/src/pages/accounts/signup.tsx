@@ -35,7 +35,6 @@ const SingUp = () => {
                 const errors = error.data?.errors;
                 //@ts-ignore
                 const fieldErros = parseZodErros(errors);
-                console.log('------------errors')
                 helpers.setErrors(fieldErros);
               },
             });

@@ -17,7 +17,7 @@ class AccountsController {
         message: "Invalid fields",
         code: "BAD_REQUEST",
         cause: {
-          email: "Email is already in use",
+          email: ["Email is already in use"],
         },
       });
     }
