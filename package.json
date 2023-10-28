@@ -13,7 +13,8 @@
     "test": "dotenv -e .env.test -- pnpm test --filter  ",
     "d:server": "dotenv -e .env.development -- pnpm   --filter server  dev ",
     "d:web": "dotenv -e .env.development -- pnpm --filter web dev",
-    "build": "dotenv -e .env.development -- pnpm nx build "
+    "build": "dotenv -e .env.development -- pnpm nx build ",
+    "test":"pnpm  db:migrate:test && dotenv -e .env.test -- pnpm  test --filter "
   },
   "keywords": [],
   "author": "",

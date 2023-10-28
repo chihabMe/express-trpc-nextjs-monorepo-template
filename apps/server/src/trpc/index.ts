@@ -13,6 +13,9 @@ export async function createContext({
   res,
 }: trpcExpress.CreateExpressContextOptions) {
   async function getUserFromCookie() {
+    console.log("--------headers-------------")
+    console.log(req.headers)
+    console.log("--------headers-------------")
     const token = req.headers["authorization"];
     if (token) {
       const user = await jwt.verify(token.split(" ")[1]);
